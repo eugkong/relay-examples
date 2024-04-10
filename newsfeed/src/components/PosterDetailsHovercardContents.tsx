@@ -8,8 +8,11 @@ import type { PosterDetailsHovercardContentsQuery as QueryType } from "./__gener
 import type { PosterDetailsHovercardContentsBodyFragment$key } from "./__generated__/PosterDetailsHovercardContentsBodyFragment.graphql";
 
 export const PosterDetailsHovercardContentsQuery = graphql`
-  query PosterDetailsHovercardContentsQuery {
-    node(id: "1") {
+  # Query variable: $posterId
+  query PosterDetailsHovercardContentsQuery($posterId: ID!) {
+    # Query variable used as field argument. Can also be used as fragment argument.
+    node(id: $posterId) {
+      # Type refinement. Specifies the type to expect.
       ... on Actor {
         ...PosterDetailsHovercardContentsBodyFragment
       }
@@ -17,10 +20,14 @@ export const PosterDetailsHovercardContentsQuery = graphql`
   }
 `;
 
-export default function PosterDetailsHovercardContents({}: {}): React.ReactElement {
+export default function PosterDetailsHovercardContents({
+  posterId,
+}: {
+  posterId: string;
+}): React.ReactElement {
   const data = useLazyLoadQuery<QueryType>(
     PosterDetailsHovercardContentsQuery,
-    {}
+    { posterId }
   );
   return (
     <div className="posterHovercard">
