@@ -4,6 +4,7 @@ import { graphql } from "relay-runtime";
 import Comment from "./Comment";
 import LoadMoreCommentsButton from "./LoadMoreCommentsButton";
 import SmallSpinner from "./SmallSpinner";
+import StoryCommentsComposer from "./StoryCommentsComposer";
 import type { StoryCommentsSectionFragment$key } from "./__generated__/StoryCommentsSectionFragment.graphql";
 
 const { useState, useTransition } = React;
@@ -20,6 +21,8 @@ const StoryCommentsSectionFragment = graphql`
     count: { type: "Int", defaultValue: 3 }
     cursor: { type: "String" }
   ) {
+    ...StoryCommentsComposerFragment
+
     comments(first: $count, after: $cursor)
       # key must be unique; used when editing the connection’s contents during mutations.
       @connection(key: "StoryCommentsSectionFragment_comments") {
@@ -53,6 +56,7 @@ export default function StoryCommentsSection({
 
   return (
     <div>
+      <StoryCommentsComposer story={data} />
       {data.comments.edges.map((edge) => (
         <Comment key={edge.node.id} comment={edge.node} />
       ))}
