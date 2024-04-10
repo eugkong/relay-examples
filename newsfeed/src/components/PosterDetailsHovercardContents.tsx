@@ -2,10 +2,10 @@ import * as React from "react";
 import { PreloadedQuery, useFragment, usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import Image from "./Image";
+import OrganizationKind from "./OrganizationKind";
 import Timestamp from "./Timestamp";
-
+import { PosterDetailsHovercardContentsBodyFragment$key } from "./__generated__/PosterDetailsHovercardContentsBodyFragment.graphql";
 import type { PosterDetailsHovercardContentsQuery as QueryType } from "./__generated__/PosterDetailsHovercardContentsQuery.graphql";
-import type { PosterDetailsHovercardContentsBodyFragment$key } from "./__generated__/PosterDetailsHovercardContentsBodyFragment.graphql";
 
 export const PosterDetailsHovercardContentsQuery = graphql`
   # Query variable: $posterId
@@ -45,6 +45,14 @@ const PosterDetailsHovercardContentsBodyFragment = graphql`
     profilePicture {
       ...ImageFragment
     }
+    ... on Organization {
+      organizationKind
+    }
+    ... on Person {
+      location {
+        name
+      }
+    }
   }
 `;
 
@@ -66,6 +74,12 @@ function PosterDetailsHovercardContentsBody({
       <ul className="posterHovercard__details">
         <li>
           Joined <Timestamp time={data.joined} />
+        </li>
+        <li>
+          {data.organizationKind && (
+            <OrganizationKind kind={data.organizationKind} />
+          )}
+          {data.location && data.location.name}
         </li>
       </ul>
       <div className="posterHovercard__buttons">
