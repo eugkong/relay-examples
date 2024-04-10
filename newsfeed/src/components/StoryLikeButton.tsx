@@ -1,7 +1,6 @@
 import * as React from "react";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { useFragment } from "react-relay";
-
 import type { StoryLikeButtonFragment$key } from "./__generated__/StoryLikeButtonFragment.graphql";
 
 type Props = {
@@ -16,19 +15,43 @@ const StoryLikeButtonFragment = graphql`
   }
 `;
 
+const StoryLikeButtonLikeMutation = graphql`
+  mutation StoryLikeButtonLikeMutation($id: ID!, $doesLike: Boolean!) {
+    likeStory(id: $id, doesLike: $doesLike) {
+      story {
+        # Include the id field so that Relay will automatically update the record in the store
+        # when the mutation response is received.
+        ...StoryLikeButtonFragment
+      }
+    }
+  }
+`;
+
 export default function StoryLikeButton({ story }: Props): React.ReactElement {
   const data = useFragment<StoryLikeButtonFragment$key>(
     StoryLikeButtonFragment,
     story
   );
+
+  const [commitMutation, isMutationInFlight] = useMutation(
+    StoryLikeButtonLikeMutation
+  );
+
   const onLikeButtonClicked = () => {
-    // To be filled in
+    commitMutation({
+      variables: {
+        id: data.id,
+        doesLike: !data.doesViewerLike,
+      },
+    });
   };
+
   return (
     <div className="likeButton">
       <LikeCount count={data.likeCount} />
       <LikeButton
         doesViewerLike={data.doesViewerLike}
+        disabled={isMutationInFlight}
         onClick={onLikeButtonClicked}
       />
     </div>
