@@ -1,8 +1,10 @@
 import * as React from "react";
+import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { useFragment } from "react-relay";
-import type { StoryCommentsSectionFragment$key } from "./__generated__/StoryCommentsSectionFragment.graphql";
 import Comment from "./Comment";
+import LoadMoreCommentsButton from "./LoadMoreCommentsButton";
+import SmallSpinner from "./SmallSpinner";
+import type { StoryCommentsSectionFragment$key } from "./__generated__/StoryCommentsSectionFragment.graphql";
 
 const { useState, useTransition } = React;
 
@@ -10,11 +12,19 @@ export type Props = {
   story: StoryCommentsSectionFragment$key;
 };
 
+// Relay’s pagination features work only with fragments, not entire queries.
 const StoryCommentsSectionFragment = graphql`
-  fragment StoryCommentsSectionFragment on Story {
-    comments(first: 1) {
+  fragment StoryCommentsSectionFragment on Story
+  @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
+  @argumentDefinitions(
+    count: { type: "Int", defaultValue: 3 }
+    cursor: { type: "String" }
+  ) {
+    comments(first: $count, after: $cursor)
+      # key must be unique; used when editing the connection’s contents during mutations.
+      @connection(key: "StoryCommentsSectionFragment_comments") {
       pageInfo {
-        startCursor
+        hasNextPage
       }
       edges {
         node {
@@ -26,13 +36,30 @@ const StoryCommentsSectionFragment = graphql`
   }
 `;
 
-export default function StoryCommentsSection({ story }: Props) {
-  const data = useFragment(StoryCommentsSectionFragment, story);
+export default function StoryCommentsSection({
+  story,
+}: Props): React.ReactElement {
+  const { data, loadNext } = usePaginationFragment(
+    StoryCommentsSectionFragment,
+    story
+  );
+
+  const [isPending, startTransition] = useTransition();
+
+  const onLoadMore = () =>
+    startTransition(() => {
+      loadNext(3);
+    });
+
   return (
     <div>
       {data.comments.edges.map((edge) => (
         <Comment key={edge.node.id} comment={edge.node} />
       ))}
+      {data.comments.pageInfo.hasNextPage && (
+        <LoadMoreCommentsButton disabled={isPending} onClick={onLoadMore} />
+      )}
+      {isPending && <SmallSpinner />}
     </div>
   );
 }

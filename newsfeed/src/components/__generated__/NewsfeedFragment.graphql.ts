@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6d34792f451e7f20ffeae0d350e18711>>
+ * @generated SignedSource<<da4980a44e9be0097d5731a62e1fcb8b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,13 +8,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type NewsfeedFragment$data = {
-  readonly topStories: ReadonlyArray<{
-    readonly id: string;
-    readonly " $fragmentSpreads": FragmentRefs<"StoryFragment">;
-  } | null | undefined> | null | undefined;
+  readonly viewer: {
+    readonly newsfeedStories: {
+      readonly edges: ReadonlyArray<{
+        readonly node: {
+          readonly id: string;
+          readonly " $fragmentSpreads": FragmentRefs<"StoryFragment">;
+        } | null | undefined;
+      } | null | undefined> | null | undefined;
+    } | null | undefined;
+  } | null | undefined;
   readonly " $fragmentType": "NewsfeedFragment";
 };
 export type NewsfeedFragment$key = {
@@ -22,31 +28,140 @@ export type NewsfeedFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"NewsfeedFragment">;
 };
 
-const node: ReaderFragment = {
-  "argumentDefinitions": [],
+const node: ReaderFragment = (function(){
+var v0 = [
+  "viewer",
+  "newsfeedStories"
+];
+return {
+  "argumentDefinitions": [
+    {
+      "defaultValue": 2,
+      "kind": "LocalArgument",
+      "name": "count"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "cursor"
+    }
+  ],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": "count",
+        "cursor": "cursor",
+        "direction": "forward",
+        "path": (v0/*: any*/)
+      }
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "count",
+          "cursor": "cursor"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [],
+      "operation": require('./NewsfeedContentsRefetchQuery.graphql')
+    }
+  },
   "name": "NewsfeedFragment",
   "selections": [
     {
       "alias": null,
       "args": null,
-      "concreteType": "Story",
+      "concreteType": "Viewer",
       "kind": "LinkedField",
-      "name": "topStories",
-      "plural": true,
+      "name": "viewer",
+      "plural": false,
       "selections": [
         {
-          "alias": null,
+          "alias": "newsfeedStories",
           "args": null,
-          "kind": "ScalarField",
-          "name": "id",
+          "concreteType": "StoriesConnection",
+          "kind": "LinkedField",
+          "name": "__NewsfeedFragment_newsfeedStories_connection",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "StoriesConnectionEdge",
+              "kind": "LinkedField",
+              "name": "edges",
+              "plural": true,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Story",
+                  "kind": "LinkedField",
+                  "name": "node",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "id",
+                      "storageKey": null
+                    },
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "StoryFragment"
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "__typename",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "cursor",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "PageInfo",
+              "kind": "LinkedField",
+              "name": "pageInfo",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "endCursor",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "hasNextPage",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            }
+          ],
           "storageKey": null
-        },
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "StoryFragment"
         }
       ],
       "storageKey": null
@@ -55,7 +170,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "a067b19331ece5e8f608803df1d2a8c3";
+(node as any).hash = "7f411251e67369358ab0d4b78715740e";
 
 export default node;

@@ -1,20 +1,28 @@
 import * as React from "react"; // Need this import statement.
-import { useFragment } from "react-relay";
+import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import InfiniteScrollTrigger from "./InfiniteScrollTrigger";
 import Story from "./Story";
 import { NewsfeedFragment$key } from "./__generated__/NewsfeedFragment.graphql";
 
 /* The graphql`` tag allows the Relay compiler to find and compile the GraphQL within a Javascript codebase. */
 const NewsfeedFragment = graphql`
-  fragment NewsfeedFragment on Query {
-    topStories {
-      id
-      # When you spread a fragment into a query (or another fragment),
-      # the part of the query result corresponding to where you spread the fragment
-      # becomes a fragment key for that fragment.
-      # This is the object that you pass to a component in its props in order to
-      # give it a specific place in the graph to read the fragment from.
-      ...StoryFragment
+  fragment NewsfeedFragment on Query
+  @refetchable(queryName: "NewsfeedContentsRefetchQuery")
+  @argumentDefinitions(
+    count: { type: "Int", defaultValue: 2 }
+    cursor: { type: "String" }
+  ) {
+    viewer {
+      newsfeedStories(first: $count, after: $cursor)
+        @connection(key: "NewsfeedFragment_newsfeedStories") {
+        edges {
+          node {
+            id
+            ...StoryFragment
+          }
+        }
+      }
     }
   }
 `;
@@ -24,13 +32,27 @@ type Props = {
 };
 
 export default function Newsfeed({ newsfeed }: Props): React.ReactElement {
-  const { topStories } = useFragment(NewsfeedFragment, newsfeed);
+  const { data, hasNext, loadNext, isLoadingNext } = usePaginationFragment(
+    NewsfeedFragment,
+    newsfeed
+  );
+
+  const storyEdges = data.viewer.newsfeedStories.edges;
+
+  const onEndReached = () => {
+    loadNext(2);
+  };
 
   return (
     <div className="newsfeed">
-      {topStories.map((story) => (
-        <Story key={story.id} story={story} />
+      {storyEdges.map((storyEdge) => (
+        <Story key={storyEdge.node.id} story={storyEdge.node} />
       ))}
+      <InfiniteScrollTrigger
+        onEndReached={onEndReached}
+        hasNext={hasNext}
+        isLoadingNext={isLoadingNext}
+      />
     </div>
   );
 }
