@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5a151a5a268b6dd5b6eb9d293a2e1795>>
+ * @generated SignedSource<<ebcc358bf2d25415cba6bae725850789>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ImageFragment$data = {
-  readonly altText: string | null;
+  readonly altText: string | null | undefined;
   readonly url: string;
   readonly " $fragmentType": "ImageFragment";
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8889ba1a2f5eae47db38f1b3c59bba4d>>
+ * @generated SignedSource<<5bdc1b6f70b9bf22233394e9d99a2592>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,11 +12,11 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ViewerProfileFragment$data = {
   readonly actor: {
-    readonly name: string | null;
+    readonly name: string | null | undefined;
     readonly profilePicture: {
       readonly url: string;
-    } | null;
-  } | null;
+    } | null | undefined;
+  } | null | undefined;
   readonly " $fragmentType": "ViewerProfileFragment";
 };
 export type ViewerProfileFragment$key = {

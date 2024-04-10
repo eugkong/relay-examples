@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9084679bca54b3fb32d232a9ecf484ad>>
+ * @generated SignedSource<<b6ce154877fe7db9783ca98d61b08275>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,12 +16,12 @@ export type StoryCommentsSectionFragment$data = {
       readonly node: {
         readonly id: string;
         readonly " $fragmentSpreads": FragmentRefs<"CommentFragment">;
-      } | null;
-    } | null> | null;
+      } | null | undefined;
+    } | null | undefined> | null | undefined;
     readonly pageInfo: {
-      readonly startCursor: string | null;
-    } | null;
-  } | null;
+      readonly startCursor: string | null | undefined;
+    } | null | undefined;
+  } | null | undefined;
   readonly " $fragmentType": "StoryCommentsSectionFragment";
 };
 export type StoryCommentsSectionFragment$key = {
