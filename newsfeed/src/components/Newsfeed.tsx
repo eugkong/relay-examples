@@ -1,12 +1,12 @@
 import * as React from "react"; // Need this import statement.
-import { useLazyLoadQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Story from "./Story";
-import type { NewsfeedQuery as NewsfeedQueryType } from "./__generated__/NewsfeedQuery.graphql";
+import { NewsfeedFragment$key } from "./__generated__/NewsfeedFragment.graphql";
 
 /* The graphql`` tag allows the Relay compiler to find and compile the GraphQL within a Javascript codebase. */
-const NewsfeedQuery = graphql`
-  query NewsfeedQuery {
+const NewsfeedFragment = graphql`
+  fragment NewsfeedFragment on Query {
     topStories {
       id
       # When you spread a fragment into a query (or another fragment),
@@ -19,13 +19,16 @@ const NewsfeedQuery = graphql`
   }
 `;
 
-export default function Newsfeed(): React.ReactElement {
-  const data = useLazyLoadQuery<NewsfeedQueryType>(NewsfeedQuery, {});
-  const stories = data.topStories; // Fragment key.
+type Props = {
+  newsfeed: NewsfeedFragment$key;
+};
+
+export default function Newsfeed({ newsfeed }: Props): React.ReactElement {
+  const { topStories } = useFragment(NewsfeedFragment, newsfeed);
 
   return (
     <div className="newsfeed">
-      {stories.map((story) => (
+      {topStories.map((story) => (
         <Story key={story.id} story={story} />
       ))}
     </div>

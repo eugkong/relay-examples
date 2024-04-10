@@ -1,13 +1,13 @@
 import * as React from "react";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { useLazyLoadQuery } from "react-relay";
-import LoadingSpinner from "./LoadingSpinner";
-import type { SidebarQuery as SidebarQueryType } from "./__generated__/SidebarQuery.graphql";
-import ViewerProfile from "./ViewerProfile";
 import ContactsList from "./ContactsList";
+import LoadingSpinner from "./LoadingSpinner";
+import ViewerProfile from "./ViewerProfile";
+import { SidebarFragment$key } from "./__generated__/SidebarFragment.graphql";
 
-const SidebarQuery = graphql`
-  query SidebarQuery {
+const SidebarFragment = graphql`
+  fragment SidebarFragment on Query {
     viewer {
       ...ViewerProfileFragment
       ...ContactsListFragment
@@ -15,22 +15,27 @@ const SidebarQuery = graphql`
   }
 `;
 
-export default function Sidebar() {
+type Props = {
+  sidebarContents: SidebarFragment$key;
+};
+
+export default function Sidebar({ sidebarContents }: Props) {
   return (
     <div className="sidebar">
       <React.Suspense fallback={<LoadingSpinner />}>
-        <SidebarContents />
+        <SidebarContents sidebarContents={sidebarContents} />
       </React.Suspense>
     </div>
   );
 }
 
-function SidebarContents() {
-  const data = useLazyLoadQuery<SidebarQueryType>(SidebarQuery, {});
+function SidebarContents({ sidebarContents }: Props) {
+  const { viewer } = useFragment(SidebarFragment, sidebarContents);
+
   return (
     <>
-      <ViewerProfile viewer={data.viewer} />
-      <ContactsList viewer={data.viewer} />
+      <ViewerProfile viewer={viewer} />
+      <ContactsList viewer={viewer} />
     </>
   );
 }

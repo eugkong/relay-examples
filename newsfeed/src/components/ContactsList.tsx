@@ -1,9 +1,9 @@
 import * as React from "react";
-import { graphql } from "relay-runtime";
 import { useFragment } from "react-relay";
-import type { ContactsListFragment$key } from "./__generated__/ContactsListFragment.graphql";
+import { graphql } from "relay-runtime";
 import Card from "./Card";
 import ContactRow from "./ContactRow";
+import type { ContactsListFragment$key } from "./__generated__/ContactsListFragment.graphql";
 
 export type Props = {
   viewer: ContactsListFragment$key;
@@ -18,7 +18,7 @@ const ContactsListFragment = graphql`
   }
 `;
 
-export default function ContactsList({ viewer }: Props) {
+export default function ContactsList({ viewer }: Props): React.ReactElement {
   const data = useFragment(ContactsListFragment, viewer);
   return (
     <Card dim={true}>
