@@ -33,15 +33,37 @@ export default function StoryLikeButton({ story }: Props): React.ReactElement {
     story
   );
 
-  const [commitMutation, isMutationInFlight] = useMutation(
-    StoryLikeButtonLikeMutation
-  );
+  const [commitMutation] = useMutation(StoryLikeButtonLikeMutation);
 
   const onLikeButtonClicked = () => {
     commitMutation({
       variables: {
         id: data.id,
         doesLike: !data.doesViewerLike,
+      },
+
+      /**
+       * All writes made in the optimistic updater will be applied immediately when
+       * the mutation is dispatched, and then rolled back when it is completed.
+       */
+      optimisticUpdater: (store) => {
+        /**
+         * Unlike normal fragments, updatable fragments are not spread into queries
+         * and do not select data to be fetched from the server.
+         * Instead, they select data that's already in the Relay local data store
+         * so that the data may be updated.
+         */
+        const fragment = graphql`
+          fragment StoryLikeButton_updatable on Story @updatable {
+            likeCount
+            doesViewerLike
+          }
+        `;
+
+        const { updatableData } = store.readUpdatableFragment(fragment, story);
+        const alreadyLikes = updatableData.doesViewerLike;
+        updatableData.doesViewerLike = !alreadyLikes;
+        updatableData.likeCount += alreadyLikes ? -1 : 1;
       },
     });
   };
@@ -51,7 +73,6 @@ export default function StoryLikeButton({ story }: Props): React.ReactElement {
       <LikeCount count={data.likeCount} />
       <LikeButton
         doesViewerLike={data.doesViewerLike}
-        disabled={isMutationInFlight}
         onClick={onLikeButtonClicked}
       />
     </div>
