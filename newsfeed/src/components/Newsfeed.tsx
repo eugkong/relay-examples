@@ -7,7 +7,8 @@ import type { NewsfeedQuery as NewsfeedQueryType } from "./__generated__/Newsfee
 /* The graphql`` tag allows the Relay compiler to find and compile the GraphQL within a Javascript codebase. */
 const NewsfeedQuery = graphql`
   query NewsfeedQuery {
-    topStory {
+    topStories {
+      id
       # When you spread a fragment into a query (or another fragment),
       # the part of the query result corresponding to where you spread the fragment
       # becomes a fragment key for that fragment.
@@ -20,11 +21,13 @@ const NewsfeedQuery = graphql`
 
 export default function Newsfeed(): React.ReactElement {
   const data = useLazyLoadQuery<NewsfeedQueryType>(NewsfeedQuery, {});
-  const story = data.topStory; // Fragment key.
+  const stories = data.topStories; // Fragment key.
 
   return (
     <div className="newsfeed">
-      <Story story={story} />
+      {stories.map((story) => (
+        <Story key={story.id} story={story} />
+      ))}
     </div>
   );
 }
