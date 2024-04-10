@@ -1,6 +1,5 @@
-import {Network, QueryResponseCache} from 'relay-runtime';
-
-import {registerLoader} from '../moduleLoader';
+import { Network, QueryResponseCache } from 'relay-runtime';
+import { registerLoader } from '../moduleLoader';
 
 const ONE_MINUTE_IN_MS = 60 * 1000;
 
@@ -44,7 +43,7 @@ export async function networkFetch(id, variables) {
   const response = await fetch(
     // TODO: figure out how not to use hardcoded hostname and port
     // TODO: consider bypassing api fetch and directly invoking graphql on server
-    process.env.GRAPHQL_ENDPOINT ?? 'http://localhost:3000/api/graphql',
+    process.env.GRAPHQL_ENDPOINT ?? 'http://localhost:3003/api/graphql',
     {
       method: 'POST',
       headers: {

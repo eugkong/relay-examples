@@ -56,7 +56,7 @@ You can run the app by navigating to `relay-examples/issue-tracker/` and then ru
         # yarn users:
         yarn start
 
-This will start the development server (including Relay Compiler) and open a browser to [localhost:3000](http://localhost:3000).
+This will start the development server (including Relay Compiler) and open a browser to [localhost:3003](http://localhost:3003).
 
 ## About the App
 
@@ -78,7 +78,7 @@ The available scripts are primarily those defined by Create React App. In the pr
 ### `yarn start`
 
 Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:3003](http://localhost:3003) to view it in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.

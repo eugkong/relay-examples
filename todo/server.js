@@ -1,14 +1,14 @@
 // @flow
 import express from 'express';
-import {graphqlHTTP} from 'express-graphql';
-import {persistedQueries} from 'express-graphql-persisted-queries';
+import { graphqlHTTP } from 'express-graphql';
+import { persistedQueries } from 'express-graphql-persisted-queries';
 import fs from 'fs';
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import {schema} from './data/schema';
+import { schema } from './data/schema';
 
-const APP_PORT: number = 3000;
+const APP_PORT: number = 3003;
 const QUERY_MAP_FILE: string = path.resolve(
   __dirname,
   '__generated__',
